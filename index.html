@@ -1,3 +1,72 @@
+```html
+    /* Fallback styles in case Tailwind doesn't load */
+    .bg-gray-900 { background-color: #111827 !important; }
+    .bg-gray-800 { background-color: #1f2937 !important; }
+    .bg-gray-700 { background-color: #374151 !important; }
+    .bg-gray-600 { background-color: #4b5563 !important; }
+    .bg-white { background-color: white !important; }
+    .text-white { color: white !important; }
+    .text-gray-800 { color: #1f2937 !important; }
+    .rounded-lg { border-radius: 0.5rem !important; }
+    .rounded-2xl { border-radius: 1rem !important; }
+    .p-4 { padding: 1rem !important; }
+    .p-6 { padding: 1.5rem !important; }
+    .px-4 { padding-left: 1rem !important; padding-right: 1rem !important; }
+    .py-2 { padding-top: 0.5rem !important; padding-bottom: 0.5rem !important; }
+    .flex { display: flex !important; }
+    .items-center { align-items: center !important; }
+    .justify-center { justify-content: center !important; }
+    .gap-4 { gap: 1rem !important; }
+    .font-bold { font-weight: bold !important; }
+    .text-xl { font-size: 1.25rem !important; }
+    .text-2xl { font-size: 1.5rem !important; }
+    .text-3xl { font-size: 1.875rem !important; }
+    .text-4xl { font-size: 2.25rem !important; }
+    .text-6xl { font-size: 3.75rem !important; }
+    .w-full { width: 100% !important; }
+    .max-w-5xl { max-width: 64rem !important; }
+    .mx-auto { margin-left: auto !important; margin-right: auto !important; }
+    .shadow-2xl { box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important; }
+    .border-2 { border-width: 2px !important; }
+    .border-gray-300 { border-color: #d1d5db !important; }
+    .transition-all { transition: all 0.3s ease !important; }
+    .hover\:bg-blue-700:hover { background-color: #1d4ed8 !important; }
+    .hover\:bg-red-700:hover { background-color: #b91c1c !important; }
+    .hover\:bg-green-700:hover { background-color: #15803d !important; }
+    .bg-blue-600 { background-color: #2563eb !important; }
+    .bg-red-600 { background-color: #dc2626 !important; }
+    .bg-green-600 { background-color: #16a34a !important; }
+    .bg-purple-600 { background-color: #9333ea !important; }
+    .bg-yellow-600 { background-color: #ca8a04 !important; }
+    .cursor-pointer { cursor: pointer !important; }
+    .serve-indicator {
+        animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+    }
+    .overlay-mode {
+        background: transparent !important;
+    }
+    .overlay-mode .control-panel {
+        display: none !important;
+    }
+    .overlay-mode .control-buttons {
+        display: none !important;
+    }
+    .overlay-mode .header-section {
+        display: none !important;
+    }
+    .overlay-mode .match-info {
+        display: none !important;
+    }
+    .overlay-mode .scoreboard-bg {
+        background: transparent !important;
+        border: none !important;
+        padding: 0 !important;
+    }
+</style>
             <!-- OBS Overlay Link -->
             <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-4">
                 <button onclick="copyOverlayLink()" class="bg-purple-600 hover:bg-purple-700 px-3 sm:px-4 py-2 rounded-lg font-medium transition-colors text-sm sm:text-base">
