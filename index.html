@@ -1,0 +1,490 @@
+            <!-- OBS Overlay Link -->
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-4">
+                <button onclick="copyOverlayLink()" class="bg-purple-600 hover:bg-purple-700 px-3 sm:px-4 py-2 rounded-lg font-medium transition-colors text-sm sm:text-base">
+                    📋 Copy OBS Link
+                </button>
+                <button onclick="toggleOverlayMode()" class="bg-green-600 hover:bg-green-700 px-3 sm:px-4 py-2 rounded-lg font-medium transition-colors text-sm sm:text-base">
+                    👁️ Preview Overlay
+                </button>
+                <div class="text-xs text-gray-400 text-center sm:text-left">
+                    Board ID: <span id="boardIdDisplay">Loading...</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Team Controls - Mobile Responsive -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mt-4 sm:mt-6">
+            <!-- Team 1 Controls -->
+            <div class="bg-gray-700 p-3 sm:p-4 rounded-lg">
+                <h3 class="font-semibold mb-3 text-blue-300 text-sm sm:text-base">Team 1 Settings</h3>
+                <div class="space-y-3">
+                    <input type="text" id="team1Name" placeholder="ชื่อทีม 1" value="Team 1" 
+                           class="w-full p-2 sm:p-3 bg-gray-600 rounded border border-gray-500 text-white text-sm sm:text-base"
+                           onchange="updateTeamName(1, this.value)">
+                    <div class="flex items-center gap-2 sm:gap-3">
+                        <label class="text-xs sm:text-sm flex-shrink-0">สีพื้นหลัง:</label>
+                        <input type="color" id="team1Color" value="#3b82f6" 
+                               class="w-10 h-8 sm:w-12 sm:h-8 rounded border border-gray-500 flex-shrink-0"
+                               onchange="updateTeamColor(1, this.value)">
+                    </div>
+                    <button onclick="setServe(1)" class="w-full bg-blue-600 hover:bg-blue-700 py-2 sm:py-3 rounded font-medium transition-colors text-sm sm:text-base">
+                        🏸 Set as Serving Team
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Team 2 Controls -->
+            <div class="bg-gray-700 p-3 sm:p-4 rounded-lg">
+                <h3 class="font-semibold mb-3 text-red-300 text-sm sm:text-base">Team 2 Settings</h3>
+                <div class="space-y-3">
+                    <input type="text" id="team2Name" placeholder="ชื่อทีม 2" value="Team 2" 
+                           class="w-full p-2 sm:p-3 bg-gray-600 rounded border border-gray-500 text-white text-sm sm:text-base"
+                           onchange="updateTeamName(2, this.value)">
+                    <div class="flex items-center gap-2 sm:gap-3">
+                        <label class="text-xs sm:text-sm flex-shrink-0">สีพื้นหลัง:</label>
+                        <input type="color" id="team2Color" value="#ef4444" 
+                               class="w-10 h-8 sm:w-12 sm:h-8 rounded border border-gray-500 flex-shrink-0"
+                               onchange="updateTeamColor(2, this.value)">
+                    </div>
+                    <button onclick="setServe(2)" class="w-full bg-red-600 hover:bg-red-700 py-2 sm:py-3 rounded font-medium transition-colors text-sm sm:text-base">
+                        🏸 Set as Serving Team
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Game Controls - Mobile Responsive -->
+        <div class="grid grid-cols-2 sm:flex sm:flex-wrap sm:justify-center gap-2 sm:gap-4 mt-4 sm:mt-6">
+            <button onclick="resetScores()" class="bg-yellow-600 hover:bg-yellow-700 px-3 sm:px-6 py-2 rounded-lg font-medium transition-colors text-xs sm:text-base">
+                🔄 Reset Set
+            </button>
+            <button onclick="finishSet(1)" class="bg-blue-600 hover:bg-blue-700 px-2 sm:px-4 py-2 rounded-lg font-medium transition-colors text-xs sm:text-base">
+                🏆 Team 1 Win
+            </button>
+            <button onclick="finishSet(2)" class="bg-red-600 hover:bg-red-700 px-2 sm:px-4 py-2 rounded-lg font-medium transition-colors text-xs sm:text-base">
+                🏆 Team 2 Win
+            </button>
+            <button onclick="resetAll()" class="bg-gray-600 hover:bg-gray-700 px-3 sm:px-6 py-2 rounded-lg font-medium transition-colors text-xs sm:text-base">
+                ⚠️ Reset All
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Scoreboard Display -->
+<div id="scoreboard" class="flex-1 flex items-center justify-center p-2 sm:p-4">
+    <div class="w-full max-w-5xl">
+        <!-- BWF Style Scoreboard -->
+        <div class="scoreboard-bg rounded-2xl sm:rounded-3xl p-4 sm:p-8">
+
+
+            <!-- Main Score Display - Mobile Responsive -->
+            <div class="bg-white bg-opacity-95 rounded-2xl overflow-hidden shadow-2xl mb-6">
+                <!-- Team 1 Row -->
+                <div id="team1Board" class="flex flex-col sm:flex-row items-start sm:items-center p-3 sm:p-6 border-l-4 sm:border-l-8 transition-all duration-300" 
+                     style="border-color: #3b82f6; background: linear-gradient(90deg, rgba(59,130,246,0.1) 0%, rgba(255,255,255,0.95) 20%);">
+                    <!-- Team Name & Serve Indicator -->
+                    <div class="flex items-center gap-2 sm:gap-4 flex-1 mb-3 sm:mb-0">
+                        <h2 id="team1NameDisplay" class="text-xl sm:text-3xl font-bold text-gray-800 min-w-0">Team 1</h2>
+                        <div id="serve1" class="text-xl sm:text-3xl serve-indicator" style="display: none;">🏸</div>
+                    </div>
+                    
+                    <!-- Score Section -->
+                    <div class="flex items-center justify-between sm:justify-end gap-2 sm:gap-4 w-full sm:w-auto">
+                        <!-- Sets -->
+                        <div class="text-center w-12 sm:w-16">
+                            <div class="text-xs sm:text-sm text-gray-600 font-semibold">SETS</div>
+                            <div class="text-2xl sm:text-4xl font-bold text-gray-800" id="sets1">0</div>
+                        </div>
+                        
+                        <!-- Set Scores - Hidden on mobile, shown on larger screens -->
+                        <div id="team1SetScores" class="hidden sm:flex gap-2 sm:gap-3">
+                            <div class="text-center bg-gray-100 rounded-lg px-2 sm:px-3 py-1 sm:py-2 w-[50px] sm:w-[60px]" id="team1Set1Container" style="display: none;">
+                                <div class="text-xs text-gray-500">SET 1</div>
+                                <div class="text-sm sm:text-lg font-bold text-gray-400" id="team1Set1">-</div>
+                            </div>
+                            <div class="text-center bg-gray-100 rounded-lg px-2 sm:px-3 py-1 sm:py-2 w-[50px] sm:w-[60px]" id="team1Set2Container" style="display: none;">
+                                <div class="text-xs text-gray-500">SET 2</div>
+                                <div class="text-sm sm:text-lg font-bold text-gray-400" id="team1Set2">-</div>
+                            </div>
+                            <div class="text-center bg-gray-100 rounded-lg px-2 sm:px-3 py-1 sm:py-2 w-[50px] sm:w-[60px]" id="team1Set3Container" style="display: none;">
+                                <div class="text-xs text-gray-500">SET 3</div>
+                                <div class="text-sm sm:text-lg font-bold text-gray-400" id="team1Set3">-</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Current Score -->
+                        <div class="text-4xl sm:text-6xl font-bold text-gray-800 ml-2 sm:ml-4 w-16 sm:w-24 text-center border-2 border-gray-300 rounded-lg py-1 sm:py-2" id="score1">0</div>
+                    </div>
+                    
+                    <!-- Control Buttons -->
+                    <div class="control-buttons flex gap-2 sm:gap-3 ml-0 sm:ml-6 mt-3 sm:mt-0">
+                        <button onclick="changeSet(1, -1)" class="bg-gray-500 hover:bg-gray-600 text-white text-sm sm:text-base px-3 sm:px-4 py-2 sm:py-3 rounded-full transition-all shadow-lg font-bold">-SET</button>
+                        <button onclick="changeSet(1, 1)" class="bg-blue-500 hover:bg-blue-600 text-white text-sm sm:text-base px-3 sm:px-4 py-2 sm:py-3 rounded-full transition-all shadow-lg font-bold">+SET</button>
+                        <button onclick="changeScore(1, -1)" class="bg-red-500 hover:bg-red-600 text-white text-xl sm:text-2xl w-12 h-12 sm:w-14 sm:h-14 rounded-full transition-all shadow-lg font-bold">-</button>
+                        <button onclick="changeScore(1, 1)" class="bg-green-500 hover:bg-green-600 text-white text-xl sm:text-2xl w-12 h-12 sm:w-14 sm:h-14 rounded-full transition-all shadow-lg font-bold">+</button>
+                    </div>
+                </div>
+                
+                <!-- Divider -->
+                <div class="h-px bg-gray-300"></div>
+                
+                <!-- Team 2 Row -->
+                <div id="team2Board" class="flex flex-col sm:flex-row items-start sm:items-center p-3 sm:p-6 border-l-4 sm:border-l-8 transition-all duration-300" 
+                     style="border-color: #ef4444; background: linear-gradient(90deg, rgba(239,68,68,0.1) 0%, rgba(255,255,255,0.95) 20%);">
+                    <!-- Team Name & Serve Indicator -->
+                    <div class="flex items-center gap-2 sm:gap-4 flex-1 mb-3 sm:mb-0">
+                        <h2 id="team2NameDisplay" class="text-xl sm:text-3xl font-bold text-gray-800 min-w-0">Team 2</h2>
+                        <div id="serve2" class="text-xl sm:text-3xl serve-indicator" style="display: block;">🏸</div>
+                    </div>
+                    
+                    <!-- Score Section -->
+                    <div class="flex items-center justify-between sm:justify-end gap-2 sm:gap-4 w-full sm:w-auto">
+                        <!-- Sets -->
+                        <div class="text-center w-12 sm:w-16">
+                            <div class="text-xs sm:text-sm text-gray-600 font-semibold">SETS</div>
+                            <div class="text-2xl sm:text-4xl font-bold text-gray-800" id="sets2">0</div>
+                        </div>
+                        
+                        <!-- Set Scores - Hidden on mobile, shown on larger screens -->
+                        <div id="team2SetScores" class="hidden sm:flex gap-2 sm:gap-3">
+                            <div class="text-center bg-gray-100 rounded-lg px-2 sm:px-3 py-1 sm:py-2 w-[50px] sm:w-[60px]" id="team2Set1Container" style="display: none;">
+                                <div class="text-xs text-gray-500">SET 1</div>
+                                <div class="text-sm sm:text-lg font-bold text-gray-400" id="team2Set1">-</div>
+                            </div>
+                            <div class="text-center bg-gray-100 rounded-lg px-2 sm:px-3 py-1 sm:py-2 w-[50px] sm:w-[60px]" id="team2Set2Container" style="display: none;">
+                                <div class="text-xs text-gray-500">SET 2</div>
+                                <div class="text-sm sm:text-lg font-bold text-gray-400" id="team2Set2">-</div>
+                            </div>
+                            <div class="text-center bg-gray-100 rounded-lg px-2 sm:px-3 py-1 sm:py-2 w-[50px] sm:w-[60px]" id="team2Set3Container" style="display: none;">
+                                <div class="text-xs text-gray-500">SET 3</div>
+                                <div class="text-sm sm:text-lg font-bold text-gray-400" id="team2Set3">-</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Current Score -->
+                        <div class="text-4xl sm:text-6xl font-bold text-gray-800 ml-2 sm:ml-4 w-16 sm:w-24 text-center border-2 border-gray-300 rounded-lg py-1 sm:py-2" id="score2">0</div>
+                    </div>
+                    
+                    <!-- Control Buttons -->
+                    <div class="control-buttons flex gap-2 sm:gap-3 ml-0 sm:ml-6 mt-3 sm:mt-0">
+                        <button onclick="changeSet(2, -1)" class="bg-gray-500 hover:bg-gray-600 text-white text-sm sm:text-base px-3 sm:px-4 py-2 sm:py-3 rounded-full transition-all shadow-lg font-bold">-SET</button>
+                        <button onclick="changeSet(2, 1)" class="bg-red-500 hover:bg-red-600 text-white text-sm sm:text-base px-3 sm:px-4 py-2 sm:py-3 rounded-full transition-all shadow-lg font-bold">+SET</button>
+                        <button onclick="changeScore(2, -1)" class="bg-red-500 hover:bg-red-600 text-white text-xl sm:text-2xl w-12 h-12 sm:w-14 sm:h-14 rounded-full transition-all shadow-lg font-bold">-</button>
+                        <button onclick="changeScore(2, 1)" class="bg-green-500 hover:bg-green-600 text-white text-xl sm:text-2xl w-12 h-12 sm:w-14 sm:h-14 rounded-full transition-all shadow-lg font-bold">+</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Match Info -->
+            <div class="match-info text-center">
+                <div class="bg-white bg-opacity-20 rounded-xl p-2 sm:p-3 inline-block backdrop-blur-sm">
+                    <div class="text-sm sm:text-lg font-semibold text-yellow-300" id="currentSetDisplay">CURRENT SET: 1</div>
+                    <div class="text-xs sm:text-sm text-gray-200 mt-1">Best of 3 Sets • First to 21 Points</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Generate unique board ID
+    let boardId = localStorage.getItem('badmintonBoardId');
+    if (!boardId) {
+        boardId = 'board_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
+        localStorage.setItem('badmintonBoardId', boardId);
+    }
+
+    let gameState = {
+        team1: { name: 'Team 1', score: 0, sets: 0, color: '#3b82f6' },
+        team2: { name: 'Team 2', score: 0, sets: 0, color: '#ef4444' },
+        servingTeam: 2,
+        currentSet: 1,
+        setHistory: [
+            { team1: null, team2: null },
+            { team1: null, team2: null },
+            { team1: null, team2: null }
+        ]
+    };
+
+    // Real-time sync functions
+    function saveGameState() {
+        localStorage.setItem(`gameState_${boardId}`, JSON.stringify(gameState));
+        // Trigger storage event for other tabs
+        window.dispatchEvent(new StorageEvent('storage', {
+            key: `gameState_${boardId}`,
+            newValue: JSON.stringify(gameState)
+        }));
+    }
+
+    function loadGameState() {
+        const saved = localStorage.getItem(`gameState_${boardId}`);
+        if (saved) {
+            gameState = JSON.parse(saved);
+            updateDisplay();
+        }
+    }
+
+    function updateDisplay() {
+        // Update team names
+        document.getElementById('team1NameDisplay').textContent = gameState.team1.name;
+        document.getElementById('team2NameDisplay').textContent = gameState.team2.name;
+        
+        // Update colors
+        document.getElementById('team1Board').style.borderColor = gameState.team1.color;
+        document.getElementById('team2Board').style.borderColor = gameState.team2.color;
+        
+        // Update scores
+        document.getElementById('score1').textContent = gameState.team1.score;
+        document.getElementById('score2').textContent = gameState.team2.score;
+        document.getElementById('sets1').textContent = gameState.team1.sets;
+        document.getElementById('sets2').textContent = gameState.team2.sets;
+        
+        // Update serve indicator
+        document.getElementById('serve1').style.display = gameState.servingTeam === 1 ? 'block' : 'none';
+        document.getElementById('serve2').style.display = gameState.servingTeam === 2 ? 'block' : 'none';
+        
+        // Update current set
+        document.getElementById('currentSetDisplay').textContent = `CURRENT SET: ${gameState.currentSet}`;
+        
+        // Update set history
+        for (let i = 1; i <= 3; i++) {
+            const setData = gameState.setHistory[i-1];
+            if (setData.team1 !== null) {
+                document.getElementById(`team1Set${i}Container`).style.display = 'block';
+                document.getElementById(`team2Set${i}Container`).style.display = 'block';
+                document.getElementById(`team1Set${i}`).textContent = setData.team1;
+                document.getElementById(`team2Set${i}`).textContent = setData.team2;
+                
+                // Update completed set styling
+                const team1SetElement = document.getElementById(`team1Set${i}Container`);
+                const team2SetElement = document.getElementById(`team2Set${i}Container`);
+                
+                team1SetElement.className = 'text-center bg-green-100 rounded-lg px-3 py-2 min-w-[60px] border-2 border-green-500';
+                team2SetElement.className = 'text-center bg-green-100 rounded-lg px-3 py-2 min-w-[60px] border-2 border-green-500';
+                
+                team1SetElement.querySelector('.text-xs').className = 'text-xs text-green-600';
+                team2SetElement.querySelector('.text-xs').className = 'text-xs text-green-600';
+                
+                document.getElementById(`team1Set${i}`).className = 'text-lg font-bold text-green-800';
+                document.getElementById(`team2Set${i}`).className = 'text-lg font-bold text-green-800';
+            }
+        }
+        
+        // Update control panel if not in overlay mode
+        if (!document.body.classList.contains('overlay-mode')) {
+            document.getElementById('team1Name').value = gameState.team1.name;
+            document.getElementById('team2Name').value = gameState.team2.name;
+            document.getElementById('team1Color').value = gameState.team1.color;
+            document.getElementById('team2Color').value = gameState.team2.color;
+        }
+    }
+
+    // Listen for storage changes (real-time sync between tabs)
+    window.addEventListener('storage', (e) => {
+        if (e.key === `gameState_${boardId}` && e.newValue) {
+            gameState = JSON.parse(e.newValue);
+            updateDisplay();
+        }
+    });
+
+    function updateTeamName(team, name) {
+        gameState[`team${team}`].name = name;
+        document.getElementById(`team${team}NameDisplay`).textContent = name;
+        saveGameState();
+    }
+
+    function updateTeamColor(team, color) {
+        gameState[`team${team}`].color = color;
+        document.getElementById(`team${team}Board`).style.borderColor = color;
+        saveGameState();
+    }
+
+    function changeSet(team, delta) {
+        const newSets = Math.max(0, Math.min(3, gameState[`team${team}`].sets + delta));
+        gameState[`team${team}`].sets = newSets;
+        document.getElementById(`sets${team}`).textContent = newSets;
+        saveGameState();
+        
+        // Check for match winner
+        if (newSets >= 2) {
+            setTimeout(() => {
+                alert(`🎉 ${gameState[`team${team}`].name} ชนะการแข่งขัน! (${newSets}-${gameState[team === 1 ? 'team2' : 'team1'].sets})`);
+            }, 100);
+        }
+    }
+
+    function finishSet(winningTeam) {
+        const setIndex = gameState.currentSet - 1;
+        if (setIndex < 3) {
+            gameState.setHistory[setIndex] = {
+                team1: gameState.team1.score,
+                team2: gameState.team2.score
+            };
+            
+            // Show and update set score display in team rows
+            document.getElementById(`team1Set${gameState.currentSet}Container`).style.display = 'block';
+            document.getElementById(`team2Set${gameState.currentSet}Container`).style.display = 'block';
+            
+            document.getElementById(`team1Set${gameState.currentSet}`).textContent = gameState.team1.score;
+            document.getElementById(`team2Set${gameState.currentSet}`).textContent = gameState.team2.score;
+            
+            // Change the completed set's appearance
+            const team1SetElement = document.getElementById(`team1Set${gameState.currentSet}Container`);
+            const team2SetElement = document.getElementById(`team2Set${gameState.currentSet}Container`);
+            
+            team1SetElement.className = 'text-center bg-green-100 rounded-lg px-3 py-2 min-w-[60px] border-2 border-green-500';
+            team2SetElement.className = 'text-center bg-green-100 rounded-lg px-3 py-2 min-w-[60px] border-2 border-green-500';
+            
+            team1SetElement.querySelector('.text-gray-500').className = 'text-xs text-green-600';
+            team2SetElement.querySelector('.text-gray-500').className = 'text-xs text-green-600';
+            
+            document.getElementById(`team1Set${gameState.currentSet}`).className = 'text-lg font-bold text-green-800';
+            document.getElementById(`team2Set${gameState.currentSet}`).className = 'text-lg font-bold text-green-800';
+            
+            // Award set to winning team
+            changeSet(winningTeam, 1);
+            
+            // Move to next set if match isn't over
+            if (gameState.team1.sets < 2 && gameState.team2.sets < 2 && gameState.currentSet < 3) {
+                gameState.currentSet++;
+                document.getElementById('currentSetDisplay').textContent = `CURRENT SET: ${gameState.currentSet}`;
+                
+                // Reset scores for new set
+                gameState.team1.score = 0;
+                gameState.team2.score = 0;
+                document.getElementById('score1').textContent = '0';
+                document.getElementById('score2').textContent = '0';
+                saveGameState();
+            }
+        }
+    }
+
+    function changeScore(team, delta) {
+        const newScore = Math.max(0, gameState[`team${team}`].score + delta);
+        gameState[`team${team}`].score = newScore;
+        document.getElementById(`score${team}`).textContent = newScore;
+        
+        // Auto switch serve on score change (common in badminton)
+        if (delta > 0) {
+            setServe(team);
+        }
+        
+        saveGameState();
+        
+        // Check for set win (21 points with 2 point lead, or first to 30)
+        const opponent = team === 1 ? 2 : 1;
+        const opponentScore = gameState[`team${opponent}`].score;
+        
+        if ((newScore >= 21 && newScore - opponentScore >= 2) || newScore >= 30) {
+            setTimeout(() => {
+                if (confirm(`🎉 ${gameState[`team${team}`].name} ชนะเซ็ตที่ ${gameState.currentSet}! (${newScore}-${opponentScore})\n\nต้องการไปเซ็ตถัดไปหรือไม่?`)) {
+                    finishSet(team);
+                }
+            }, 100);
+        }
+    }
+
+    function setServe(team) {
+        gameState.servingTeam = team;
+        document.getElementById('serve1').style.display = team === 1 ? 'block' : 'none';
+        document.getElementById('serve2').style.display = team === 2 ? 'block' : 'none';
+        saveGameState();
+    }
+
+    function resetScores() {
+        gameState.team1.score = 0;
+        gameState.team2.score = 0;
+        document.getElementById('score1').textContent = '0';
+        document.getElementById('score2').textContent = '0';
+        saveGameState();
+    }
+
+    function resetAll() {
+        if (confirm('คุณต้องการรีเซ็ตทุกอย่างใช่หรือไม่?')) {
+            gameState = {
+                team1: { name: 'Team 1', score: 0, sets: 0, color: '#3b82f6' },
+                team2: { name: 'Team 2', score: 0, sets: 0, color: '#ef4444' },
+                servingTeam: 1,
+                currentSet: 1,
+                setHistory: [
+                    { team1: null, team2: null },
+                    { team1: null, team2: null },
+                    { team1: null, team2: null }
+                ]
+            };
+            
+            updateDisplay();
+            saveGameState();
+        }
+    }
+
+    function copyOverlayLink() {
+        const baseUrl = window.location.href.split('?')[0].split('#')[0];
+        const overlayUrl = `${baseUrl}?overlay=true&boardId=${boardId}`;
+        navigator.clipboard.writeText(overlayUrl).then(() => {
+            alert(`🎉 Overlay link copied!\nBoard ID: ${boardId}\n\nURL: ${overlayUrl}\n\nวาง URL นี้ใน OBS Browser Source`);
+        }).catch(() => {
+            // Fallback for browsers that don't support clipboard API
+            prompt('Copy this URL for OBS:', overlayUrl);
+        });
+    }
+
+    function toggleOverlayMode() {
+        document.body.classList.toggle('overlay-mode');
+        const button = event.target;
+        if (document.body.classList.contains('overlay-mode')) {
+            button.textContent = '🔙 Exit Overlay Mode';
+        } else {
+            button.textContent = '👁️ Preview Overlay Mode';
+        }
+    }
+
+    // Initialize on page load
+    window.addEventListener('load', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const currentPath = window.location.pathname;
+        
+        // Check if URL contains /overlay or overlay=true parameter
+        if (currentPath.includes('/overlay') || urlParams.get('overlay') === 'true') {
+            document.body.classList.add('overlay-mode');
+            
+            // If overlay has boardId parameter, use it instead of localStorage
+            const urlBoardId = urlParams.get('boardId');
+            if (urlBoardId) {
+                boardId = urlBoardId;
+                console.log('Using Board ID from URL:', boardId);
+            } else {
+                console.log('No Board ID in URL, using:', boardId);
+            }
+        }
+        
+        // Load saved game state
+        loadGameState();
+        
+        // Start polling for updates every 1000ms for overlay mode
+        if (document.body.classList.contains('overlay-mode')) {
+            console.log('Starting overlay sync for Board ID:', boardId);
+            setInterval(() => {
+                loadGameState();
+            }, 1000);
+        }
+        
+        console.log('Page loaded. Board ID:', boardId, 'Overlay mode:', document.body.classList.contains('overlay-mode'));
+        
+        // Update Board ID display
+        const boardIdDisplay = document.getElementById('boardIdDisplay');
+        if (boardIdDisplay) {
+            boardIdDisplay.textContent = boardId;
+        }
+    });
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+        if (e.key === '1') changeScore(1, 1);
+        if (e.key === '2') changeScore(2, 1);
+        if (e.key === 'q') changeScore(1, -1);
+        if (e.key === 'w') changeScore(2, -1);
+        if (e.key === 'r') resetScores();
+    });
+</script>
